@@ -36,7 +36,7 @@ public class A {
 }
 ```
 
-## JVM Options
+# JVM Options
 
 ```bash
 java -XX:+UnlockDiagnosticVMOptions -XX:+PrintFlagsFinal -version > c:\tmp\jdk-23-flags.txt
