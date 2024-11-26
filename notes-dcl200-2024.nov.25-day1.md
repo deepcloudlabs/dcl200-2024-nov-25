@@ -161,7 +161,7 @@ native-image -O3 -cp App.jar App
 
 ## Performance Metrics
 
-# JVM Result
+### JVM Result
 
 ```bash
 /usr/bin/time -v java -cp App.jar App		
@@ -196,7 +196,7 @@ native-image -O3 -cp App.jar App
         Exit status: 0	
 ```
 
-# Native image Result
+### Native image Result
 
 ```bash
 /usr/bin/time -v ./app
@@ -231,7 +231,7 @@ native-image -O3 -cp App.jar App
         Exit status: 0		
 ```
         
-# POG Result
+### POG Result
 
 ```bash
 /usr/bin/time -v ./app
