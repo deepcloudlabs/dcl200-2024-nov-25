@@ -44,3 +44,41 @@ java -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -jar c:\tmp\Java2D.jar
 java -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -jar c:\tmp\Java2D.jar
 java -XX:+UnlockDiagnosticVMOptions -XX:+UnlockExperimentalVMOptions -XX:+PrintFlagsFinal -version > c:\tmp\jdk-23-experimental-flags.txt
 ```
+# Native Image Compilation with GraalVM
+
+## Example code for GraalVM and native-image
+
+```java
+import java.util.concurrent.ThreadLocalRandom;
+
+public class App {
+  public static void main(String[] args) {
+    ThreadLocalRandom.current()
+                     .ints(1, 60)
+                     .distinct()
+                     .limit(6)
+                     .sorted()
+                     .boxed()
+                     .forEach(System.out::println);
+  }
+}
+```
+
+# Build Process:
+
+1. Basic Command
+ ```bash
+  native-image --gc=epsilon -cp App.jar App
+ ```
+2. Profile-Guided Optimizations (PGO):
+   ```bash
+native-image --pgo-instrument -cp App.jar App 
+./app -> profile.iprof
+native-image --pgo=profile.iprof -cp App.jar App
+ ```
+
+# Optimization:
+Use -O3 for aggressive optimizations
+  ```bash
+native-image -O3 -cp App.jar App
+  ```
