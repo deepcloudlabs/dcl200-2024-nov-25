@@ -168,4 +168,90 @@ gRPC is a high-performance RPC framework using Protocol Buffers (Protobuf) for s
   - Less human-readable compared to REST (due to binary format).
 
 ## 3. Reactive Systems -> Reactive Programming
-   - Since Java SE 9
+
+### Overview
+Reactive Systems are a set of design principles used to build distributed systems that are more flexible, loosely-coupled, and scalable. The core characteristics of a Reactive System include being responsive, resilient, elastic, and message-driven.
+
+Reactive Programming, on the other hand, is a programming paradigm focused on working with asynchronous data streams and propagating changes automatically through these streams.
+
+### Since Java SE 9
+Java SE 9 introduced new tools and APIs to support Reactive Programming. One of the most significant additions is the `java.util.concurrent.Flow` API, which provides a framework for building asynchronous and reactive data pipelines. This API incorporates the **Reactive Streams** standard, making it easier to implement non-blocking, backpressure-aware applications.
+
+#### Key Features Introduced:
+1. **`java.util.concurrent.Flow` API**
+   - Includes four main interfaces: `Publisher`, `Subscriber`, `Processor`, and `Subscription`.
+   - Enables the development of components that process streams of data asynchronously.
+
+2. **Support for Backpressure**
+   - Ensures that subscribers can control the rate of data emission from publishers to avoid being overwhelmed.
+
+3. **Interoperability with Existing Reactive Libraries**
+   - The `Flow` API serves as a bridge between Java's standard library and popular reactive libraries like Project Reactor and RxJava.
+
+### Advantages of Reactive Programming with Java SE 9+
+- **Improved Scalability:** By leveraging non-blocking operations, applications can handle more concurrent users with fewer resources.
+- **Simplified Asynchronous Code:** Reactive Programming abstracts complexities like callbacks and thread management.
+- **Enhanced Responsiveness:** Enables systems to remain highly responsive even under high load.
+
+### Example Usage:
+Below is a simple example of using the `Flow` API:
+
+```java
+import java.util.concurrent.Flow;
+
+class SimplePublisher implements Flow.Publisher<String> {
+    private final String[] messages = {"Hello", "Reactive", "World"};
+
+    @Override
+    public void subscribe(Flow.Subscriber<? super String> subscriber) {
+        subscriber.onSubscribe(new Flow.Subscription() {
+            private int index = 0;
+            private boolean completed = false;
+
+            @Override
+            public void request(long n) {
+                for (long i = 0; i < n && index < messages.length; i++) {
+                    subscriber.onNext(messages[index++]);
+                }
+                if (index == messages.length && !completed) {
+                    subscriber.onComplete();
+                    completed = true;
+                }
+            }
+
+            @Override
+            public void cancel() {
+                completed = true;
+            }
+        });
+    }
+}
+
+public class ReactiveExample {
+    public static void main(String[] args) {
+        SimplePublisher publisher = new SimplePublisher();
+        publisher.subscribe(new Flow.Subscriber<>() {
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                System.out.println("Subscribed!");
+                subscription.request(3);
+            }
+
+            @Override
+            public void onNext(String item) {
+                System.out.println("Received: " + item);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.err.println("Error: " + throwable.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("All items received!");
+            }
+        });
+    }
+}
+```
