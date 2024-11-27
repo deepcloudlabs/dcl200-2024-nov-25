@@ -78,6 +78,14 @@ By pre-touching the heap, the JVM verifies at startup that the operating system 
 - **Improved Performance for Large Heaps**:
 For applications with large heaps (e.g., >10GB), demand paging can cause significant latency during the first GC cycles. Pre-touching ensures that this latency is handled upfront, making GC behavior more predictable.
 
+### Downsides of -XX:+AlwaysPreTouch
+- **Longer JVM Startup Time**:
+Since the JVM touches every page of the heap during startup, applications may take longer to initialize. This overhead can be noticeable for very large heaps.
+- **Higher Initial Resource Usage**:
+Pre-touching consumes CPU cycles during startup, and it may also stress the system's memory resources if multiple JVM instances are started simultaneously.
+- **Not Necessary for Small Applications**:
+For applications with small heaps or those that don't require low-latency behavior, this option may not provide significant benefits.
+
 # Software Architecture
 
 ## 1. Process-Thread
