@@ -1,3 +1,26 @@
+# JVM Monitoring
+
+1. `JDK_HOME\bin`
+2. CLI vs GUI  
+   - **CLI**: `jcmd`, `jps`, `jstack`, `jmap`,...  
+   - **GUI**: `jconsole` -> JMX/MBean Console  
+3. Client-Server -> Remote Monitoring  
+4. JMX (Java Management eXtension) and MBeans  
+    - i. Metric  
+    - ii. Command  
+    - iii. Observer/Event-Driven  
+    - MBean Development  
+5. JFR (JDK/JVM Flight Recorder)  
+    - Custom Event  
+6. VisualVM (NetBeans RCP)  
+    - Monitoring, Profiling  
+        - i. Sampling  
+        - ii. Instrumentation  
+    - MBean Console  
+7. JMC (Oracle, Mission Control)  
+    - i. JFR  
+    - ii. Monitoring, MBean Console
+    
 # G1GC Configuration and Tuning: Throughput <--> Latency
 
 ```bash
