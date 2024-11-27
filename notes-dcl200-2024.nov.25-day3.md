@@ -47,6 +47,15 @@ use it if you %10 gain
 ```
 Humoungous: size(Object) >= RegionSize/2
 
+# Automatic G1GC Configuration
+```bash
+java -XX:+UseG1GC \
+     -XX:MaxGCPauseMillis=200 \
+     -XX:+UseAdaptiveSizePolicy \
+     -XX:+G1UseAdaptiveIHOP \
+     -Xlog:gc*:file=gc.log:time,uptime,level,tags \
+     -jar your-application.jar
+```
 # Software Architecture
 
 ## 1. Process-Thread
