@@ -88,19 +88,84 @@ For applications with small heaps or those that don't require low-latency behavi
 
 # Software Architecture
 
-## 1. Process-Thread
-   - **I. Single Process Multiple Thread**
-   - **II. Multiple Process**
-   - **III. Multiple Process Multiple Thread**
-       - RMI
-       - SOAP WS, RESTful WS, gRPC, ...
+## I. Single Process, Multiple Threads
+In this model, a single process is created, and multiple threads are spawned within the same process. Threads share the same memory space and resources of the parent process, allowing for lightweight task management. This approach is common in applications that need concurrent execution within the same task, such as:
+- **Examples**: Web servers handling multiple client requests, GUI applications with a main thread and worker threads.
+- **Advantages**:
+  - Lower resource overhead compared to multiple processes.
+  - Faster communication between threads (shared memory).
+- **Disadvantages**:
+  - Lack of memory isolation: a crash in one thread can affect the whole process.
 
-## 2. Modularity
-   - OSGi
-   - JBoss 6 -> MSC
-   - Since Java SE 9+
-       1. Platform
-       2. Application
+## II. Multiple Processes
+In this model, multiple independent processes are created, each with its own memory space. These processes do not share memory, and communication occurs via Inter-Process Communication (IPC) mechanisms like pipes, message queues, or shared memory.
+- **Examples**: Running multiple instances of the same program, microservices architecture.
+- **Advantages**:
+  - Memory isolation: one process's crash does not affect others.
+  - Scalability across multiple CPUs or machines.
+- **Disadvantages**:
+  - Higher resource usage (each process requires its own memory and resources).
+  - IPC adds overhead compared to thread communication.
+
+## III. Multiple Processes, Multiple Threads
+This combines the benefits of both models by creating multiple processes, each with multiple threads. This approach is used in highly concurrent systems or distributed systems.
+- **Examples**: Modern web browsers (separate processes for tabs, each with multiple threads), distributed computing frameworks.
+- **Advantages**:
+  - Combines the benefits of concurrency and isolation.
+  - Fault tolerance: failure in one process does not necessarily affect others.
+- **Disadvantages**:
+  - More complex to implement and manage.
+  - Higher resource usage compared to single-process threading.
+
+# Remote Method Invocation (RMI)
+RMI is a mechanism in Java that allows objects to invoke methods on remote objects (located on a different JVM). This is useful for creating distributed systems with object-oriented programming.
+- **How it works**:
+  - The server object is exposed via a remote interface.
+  - Clients can call methods on the server object as if it were local.
+- **Use cases**:
+  - Distributed applications in Java.
+  - Example: Banking systems, where remote method calls are required to access account data.
+
+# Web Services
+
+## SOAP Web Services (Simple Object Access Protocol)
+SOAP is a protocol for exchanging structured information between web services using XML.
+- **Characteristics**:
+  - Platform and language-independent.
+  - Strictly defined standards and protocols.
+  - Uses WSDL (Web Services Description Language) for service definition.
+- **Advantages**:
+  - High security with WS-Security.
+  - Reliable messaging (e.g., with retries and acknowledgments).
+- **Disadvantages**:
+  - Verbose XML format increases overhead.
+  - Slower than lightweight alternatives like REST.
+
+## RESTful Web Services (Representational State Transfer)
+REST is an architectural style for designing networked applications using standard HTTP methods.
+- **Characteristics**:
+  - Stateless communication.
+  - CRUD operations (Create, Read, Update, Delete) are mapped to HTTP methods (POST, GET, PUT, DELETE).
+  - Lightweight compared to SOAP.
+- **Advantages**:
+  - Simple and flexible.
+  - Wide adoption and easy integration with web-based systems.
+- **Disadvantages**:
+  - Lacks built-in security standards like SOAP.
+  - May require custom solutions for transactions and reliability.
+
+## gRPC (Google Remote Procedure Call)
+gRPC is a high-performance RPC framework using Protocol Buffers (Protobuf) for serialization.
+- **Characteristics**:
+  - Supports bidirectional streaming.
+  - Efficient binary serialization (smaller and faster than XML or JSON).
+  - Language-agnostic with SDKs for many languages.
+- **Advantages**:
+  - High performance, suitable for microservices and IoT.
+  - Strongly typed APIs with Protobuf definitions.
+- **Disadvantages**:
+  - Requires Protobuf for data definitions, adding complexity.
+  - Less human-readable compared to REST (due to binary format).
 
 ## 3. Reactive Systems -> Reactive Programming
    - Since Java SE 9
