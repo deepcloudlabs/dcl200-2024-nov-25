@@ -53,9 +53,31 @@ java -XX:+UseG1GC \
      -XX:MaxGCPauseMillis=200 \
      -XX:+UseAdaptiveSizePolicy \
      -XX:+G1UseAdaptiveIHOP \
+     -XX:+ParallelRefProcEnabled \
      -Xlog:gc*:file=gc.log:time,uptime,level,tags \
      -jar your-application.jar
 ```
+**-XX:+ParallelRefProcEnabled**: Enables parallel processing for reference objects, reducing latency during garbage collection
+# G1GC Improvements for Large Heaps
+In **Java 23**, **G1GC** handles large heaps (*up to* **16 TB**) more efficiently with less fragmentation and better pause time consistency. 
+
+When the JVM allocates heap memory, it reserves the memory but doesn't immediately map it to physical memory. By default, physical memory pages are only allocated when the JVM writes to them for the first time during runtime (this is called "demand paging").
+
+With **-XX:+AlwaysPreTouch**, the JVM proactively touches (writes to) every page of the heap during startup. This forces the operating system to allocate physical memory for the heap in advance.
+
+For applications with very large heaps:
+```bash
+-XX:+AlwaysPreTouch
+```
+
+### Benefits of **-XX:+AlwaysPreTouch**
+- **Reduced Runtime Latency**:
+Pre-touching ensures that memory pages are already backed by physical memory, avoiding the overhead of demand paging during application runtime. This eliminates potential page faults, which can cause unpredictable pauses.
+- **Heap Initialization Verification**:
+By pre-touching the heap, the JVM verifies at startup that the operating system can actually allocate the requested amount of memory. This can prevent situations where an application starts successfully but fails later due to insufficient memory.
+- **Improved Performance for Large Heaps**:
+For applications with large heaps (e.g., >10GB), demand paging can cause significant latency during the first GC cycles. Pre-touching ensures that this latency is handled upfront, making GC behavior more predictable.
+
 # Software Architecture
 
 ## 1. Process-Thread
